@@ -13,6 +13,7 @@ import EmailAndVerify from '../module/signup/component/EmailAndVerify.tsx';
 import {useNavigation} from '@react-navigation/native';
 import PrimaryTextInput from '../components/PrimaryTextInput.tsx';
 import {validateAllFields, validateField} from '../utils/FormValidation.tsx';
+import {fetchLocationFromPincode} from '../utils/LocationUtil.ts';
 
 function Signup() {
   const {navigate} = useNavigation();
@@ -38,13 +39,46 @@ function Signup() {
     }
   };
 
+
   const handleFieldChange =
-    (field: keyof typeof formData) => (text: string) => {
+    (field: keyof typeof formData) => async (text: string) => {
 
-      setFormData(prev => ({...prev, [field]: text}));
+      let updatedText = text;
 
-      const error = validateField(field, text, {...formData, [field]: text});
+      if (field === 'pincode') {
+        setFormData(prev => ({
+          ...prev,
+          [field]: updatedText,
+          city: '',
+          state: '',
+          country: '',
+        }));
+      } else {
+        setFormData(prev => ({...prev, [field]: updatedText}));
+      }
+
+      const updatedForm = {
+        ...formData,
+        [field]: updatedText,
+        ...(field === 'pincode' && {
+          city: '',
+          state: '',
+          country: '',
+        }),
+      };
+
+      const error = validateField(field, updatedText, updatedForm);
       setFormErrors(prev => ({...prev, [field]: error}));
+
+      if (field === 'pincode' && updatedText.length === 6 && !error) {
+        const location = await fetchLocationFromPincode(updatedText);
+        setFormData(prev => ({
+          ...prev,
+          city: location.city,
+          state: location.state,
+          country: location.country,
+        }));
+      }
     };
 
   const handleVerify = () => {
