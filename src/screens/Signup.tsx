@@ -14,6 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import PrimaryTextInput from '../components/PrimaryTextInput.tsx';
 import {validateAllFields, validateField} from '../utils/FormValidation.tsx';
 import {fetchLocationFromPincode} from '../utils/LocationUtil.ts';
+import OtpModal from "../module/signup/component/OtpModal.tsx";
 
 function Signup() {
   const {navigate} = useNavigation();
@@ -28,7 +29,9 @@ function Signup() {
     confirmPassword: '',
   });
 
-  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+    const [showOtpModal, setShowOtpModal] = useState(false);
+
+    const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const signupUser = () => {
     const errors = validateAllFields(formData);
@@ -39,10 +42,8 @@ function Signup() {
     }
   };
 
-
   const handleFieldChange =
     (field: keyof typeof formData) => async (text: string) => {
-
       let updatedText = text;
 
       if (field === 'pincode') {
@@ -83,10 +84,11 @@ function Signup() {
 
   const handleVerify = () => {
     const emailError = validateField('email', formData.email, formData);
-    if (emailError) {
-      alert(emailError);
-    } else {
-      alert('Email verified!');
+    setFormErrors(prev => ({...prev, email: emailError}));
+
+    if (!emailError) {
+      // Optionally trigger API call to send OTP here
+      setShowOtpModal(true); // show modal if email is valid
     }
   };
 
@@ -114,6 +116,15 @@ function Signup() {
               onChange={handleFieldChange('email')}
               onVerify={handleVerify}
               error={formErrors.email}
+            />
+
+            <OtpModal
+              visible={showOtpModal}
+              onClose={() => setShowOtpModal(false)}
+              onSubmit={otp => {
+                console.log('Entered OTP:', otp);
+                setShowOtpModal(false);
+              }}
             />
 
             <PrimaryTextInput
