@@ -4,6 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import About from '../screens/About.tsx';
 import Signup from '../screens/Signup.tsx';
+import Geofence from '../screens/Geofence.tsx';
 
 const Stack = createNativeStackNavigator();
 function AppNavigation() {
@@ -14,6 +15,7 @@ function AppNavigation() {
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="About" component={About} />
+        <Stack.Screen name="Geofence" component={Geofence} />
       </Stack.Navigator>
     </NavigationContainer>
   );

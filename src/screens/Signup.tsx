@@ -14,7 +14,7 @@ import {useNavigation} from '@react-navigation/native';
 import PrimaryTextInput from '../components/PrimaryTextInput.tsx';
 import {validateAllFields, validateField} from '../utils/FormValidation.tsx';
 import {fetchLocationFromPincode} from '../utils/LocationUtil.ts';
-import OtpModal from "../module/signup/component/OtpModal.tsx";
+import OtpModal from '../module/signup/component/OtpModal.tsx';
 
 function Signup() {
   const {navigate} = useNavigation();
@@ -29,9 +29,9 @@ function Signup() {
     confirmPassword: '',
   });
 
-    const [showOtpModal, setShowOtpModal] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
 
-    const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   const signupUser = () => {
     const errors = validateAllFields(formData);
@@ -87,8 +87,7 @@ function Signup() {
     setFormErrors(prev => ({...prev, email: emailError}));
 
     if (!emailError) {
-      // Optionally trigger API call to send OTP here
-      setShowOtpModal(true); // show modal if email is valid
+      setShowOtpModal(true);
     }
   };
 
@@ -186,14 +185,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 6,
     color: 'black',
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#eee',
-    backgroundColor: '#fafafa',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 14,
   },
 });
 
