@@ -11,8 +11,7 @@ function AppNavigation() {
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Signup"
-        // screenOptions={{ headerShown: false }}
-      >
+        screenOptions={{headerShown: false}}>
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="About" component={About} />
       </Stack.Navigator>
