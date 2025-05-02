@@ -12,6 +12,7 @@ import LocationField from '../module/signup/component/LocationField.tsx';
 import EmailAndVerify from '../module/signup/component/EmailAndVerify.tsx';
 import {useNavigation} from '@react-navigation/native';
 import PrimaryTextInput from '../components/PrimaryTextInput.tsx';
+import {validateAllFields, validateField} from '../utils/FormValidation.tsx';
 
 function Signup() {
   const {navigate} = useNavigation();
@@ -26,16 +27,35 @@ function Signup() {
     confirmPassword: '',
   });
 
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+
   const signupUser = () => {
-    navigate('About');
+    const errors = validateAllFields(formData);
+    setFormErrors(errors);
+
+    if (Object.keys(errors).length === 0) {
+      navigate('About');
+    }
   };
+
   const handleFieldChange =
     (field: keyof typeof formData) => (text: string) => {
+
       setFormData(prev => ({...prev, [field]: text}));
+
+      const error = validateField(field, text, {...formData, [field]: text});
+      setFormErrors(prev => ({...prev, [field]: error}));
     };
+
   const handleVerify = () => {
-    alert('Email verified!');
+    const emailError = validateField('email', formData.email, formData);
+    if (emailError) {
+      alert(emailError);
+    } else {
+      alert('Email verified!');
+    }
   };
+
   return (
     <SafeAreaView>
       <KeyboardAvoidingView behavior="padding">
@@ -50,6 +70,7 @@ function Signup() {
               label="Name"
               placeholder="Enter Name"
               onChangeText={handleFieldChange('name')}
+              error={formErrors.name}
             />
 
             <Text style={styles.label}>Email</Text>
@@ -58,12 +79,15 @@ function Signup() {
               value={formData.email}
               onChange={handleFieldChange('email')}
               onVerify={handleVerify}
+              error={formErrors.email}
             />
 
             <PrimaryTextInput
               label="Pincode"
               placeholder="Enter Pincode"
               onChangeText={handleFieldChange('pincode')}
+              keyboardType="numeric"
+              error={formErrors.pincode}
             />
 
             <LocationField
@@ -77,6 +101,7 @@ function Signup() {
               placeholder="Enter Password"
               secureTextEntry
               onChangeText={handleFieldChange('password')}
+              error={formErrors.password}
             />
 
             <PrimaryTextInput
@@ -84,6 +109,7 @@ function Signup() {
               placeholder="Retype Password"
               secureTextEntry
               onChangeText={handleFieldChange('confirmPassword')}
+              error={formErrors.confirmPassword}
             />
 
             <PrimaryButton title="Sign Up" onPress={signupUser} />
