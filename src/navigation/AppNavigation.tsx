@@ -11,7 +11,7 @@ function AppNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="Geofence"
+        initialRouteName="Signup"
         screenOptions={{headerShown: false}}>
         <Stack.Screen name="Signup" component={Signup} />
         <Stack.Screen name="About" component={About} />
